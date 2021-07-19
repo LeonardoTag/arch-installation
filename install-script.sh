@@ -10,16 +10,17 @@ do
 	ping -c 1 archlinux.org > /dev/null && echo "Internet connection found." && break
 	read -p "Internet connection not found. Try again [1] or setup Wifi [2]?" DECISION
 	[ $DECISION = "1" ] && continue
-	if [ $DECISION = "2" ] do
+	if [ $DECISION = "2" ]; then
 		STATIONS=$("iwctl device list | grep ' on ' | grep -o -P '^ +\S+' | tr -d ' ' done")
 		[ wc -l $STATIONS = "0" ] && echo "No wifi device found." && continue
-		if [ wc -l $STATIONS = "1" ] do
+		if [ wc -l $STATIONS = "1" ]; then
 			echo "Wifi device $STATIONS found."
 			STATION=$STATIONS
 		else
 			echo "Multiple wifi devices found. Please choose one."
 			echo $STATIONS
 			read -p "Device to be used: " STATION
+		fi
 		iwctl station $STATION scan || echo "Invalid device." && continue
 		iwctl station $STATION get-networks
 		NETWORKS=$("iwctl station $STATION get-networks | grep '*' | grep -o -P '^ +\S+' | tr -d ' ' done")
@@ -27,4 +28,5 @@ do
 	else
 		echo "Option unknown."
 		continue
+	fi
 		
